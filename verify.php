@@ -59,9 +59,9 @@ $code = isset($_POST['code']) ? $_POST['code'] : "";
                 <p><?= $secret.' Code: '.$code; ?></p>
                 <?php
                     if ($g->checkCode($secret, $code)) {
-                        echo "YES \n";
+                        echo "<p class='alert alert-success'>Code Valid!</p>";
                     } else {
-                        echo "NO \n";
+                        echo "<p class='alert alert-danger'>Code Invalid!</p>";
                     }
                 ?>
                 <br><br>

@@ -1,4 +1,7 @@
 <?php
+
+use DevBoot\Models\User;
+
 ob_start();//controlar o cache, assim carrega apenas uma vez
 
 date_default_timezone_set('America/Sao_Paulo');
@@ -8,6 +11,9 @@ require __DIR__ . "/vendor/autoload.php";
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
+new \DevBoot\Core\Connect;
+
+$user = User::where("email", "=", "example@devboot.com")->first();
 
 ?>
 <!DOCTYPE html>
@@ -52,6 +58,8 @@ $dotenv->load();
                 <hr>
                 <p style="font-style: italic;">Tela de Login com código</p>
                 <form action="verify.php" method="post">
+                    <input type="text" name="secret" class="form-control" value="<?= $user->code_authenticator ?>" style="font-size: xx-larger; width: 200px; border-radius: 0px; text-align: center;
+                    display:inline; color:#0275d8;" readonly>
                     <input type="number" class="form-control" name="code" placeholder="Enter Code"
                     style="font-size: xx-larger; width: 200px; border-radius: 0px; text-align: center;
                     display:inline; color:#0275d8;">
