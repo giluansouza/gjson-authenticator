@@ -1,0 +1,27 @@
+{
+    "name": "gjson/authenticator",
+    "description": "Autenticação em 2 fatores usando GoogleAuthenticator",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+          "name": "Giluan Souza",
+          "email": "giluanjsouza@gmail.com",
+          "homepage": "https://www.devboot.com.br",
+          "role": "Developer"
+        }
+    ],
+    "config": {
+        "vendor-dir": "vendor"
+    },
+    "autoload": {
+        "psr-4": {
+            "DevBoot\\": "source/"
+        }
+    },
+    "require": {
+        "php": "^7.1",
+        "ext-pdo": "^7.1",
+        "sonata-project/google-authenticator": "^2.2",
+        "vlucas/phpdotenv": "^5.1"
+    }
+}
