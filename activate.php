@@ -1,6 +1,8 @@
 <?php
 ob_start();//controlar o cache, assim carrega apenas uma vez
 
+use DevBoot\Models\User;
+
 date_default_timezone_set('America/Sao_Paulo');
 setlocale(LC_ALL, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 
@@ -9,11 +11,14 @@ require __DIR__ . "/vendor/autoload.php";
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
+new \DevBoot\Core\Connect;
 $g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
 
-$secret = $g->generateSecret();
-$QRCode = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate('gs', $secret, 'GJSON Authenticator');
-?>
+$secret = isset($_POST['secret']) ? $_POST['secret'] : "";
+$code = isset($_POST['code']) ? $_POST['code'] : "";
+
+?> 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,23 +55,35 @@ $QRCode = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate('gs', $secret, 'GJSO
     <div class="container">
         <div class="row">
             <div class="col-md-6 offset-md-3 text-center" style="background: white; padding:20px;
-            box-shadow: 10px 10px 5px rgba(0,0,0,0.7); margin-top:40px">
+            box-shadow: 10px 10px 5px rgba(0,0,0,0.7); margin-top:80px">
                 <h1>GJSON Authenticator</h1>
-                <p style="font-style: italic;">Login with Google Authenticator Time-Based</p>
+                <p style="font-style: italic;">A Google Authenticator in Time-Based</p>
                 <hr>
-                <p style="font-style: italic;">Ativação do Login Two-Factor com GoogleAuthenticator</p>
-                <form action="activate.php" method="post">
-                    <img src="<?= $QRCode; ?>" alt="Verify Code" class="img-fluid"><br><br>
-                    <input type="text" name="secret" class="form-control" value="<?= $secret ?>" style="font-size: xx-larger; width: 200px; border-radius: 0px; text-align: center;
-                    display:inline; color:#0275d8;" readonly>
-                    <input type="number" class="form-control" name="code" placeholder="Enter Code"
-                    style="font-size: xx-larger; width: 200px; border-radius: 0px; text-align: center;
-                    display:inline; color:#0275d8;">
-                    <br><br>
-                    <button type="submit" class="btn btn-md btn-primary" style="width: 200px; border-radius:0px;">
-                        Activate Two-Factor
-                    </button>
-                </form>
+                <?php
+                    if ($g->checkCode($secret, $code)) {
+                        $user = new User;
+
+                        $user->name = "DevBoot Authenticator";
+                        $user->email = "example@devboot.com";
+                        $user->password = password_hash(1234, PASSWORD_DEFAULT);
+                        $user->code_authenticator = $secret;
+
+                        if (!$user->save()) {
+                            echo "<p class='alert alert-danger'>Não foi possível inserir o usuário!</p>";
+                            return;
+                        }
+                        echo "<p class='alert alert-success'>Usuário inserido com sucesso!</p>";
+                    } else {
+                        echo "Você não digitou um código válido";
+                    }
+                ?>
+                <br><br>
+                <a href="index.php" class="btn btn-md btn-warning" style="width: 200px; border-radius:0px;">
+                    Back
+                </a>
+                <a href="login.php" class="btn btn-md btn-info" style="width: 200px; border-radius:0px;">
+                    Go Login
+                </a>
             </div>
         </div>
     </div>

@@ -9,10 +9,6 @@ require __DIR__ . "/vendor/autoload.php";
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
-
-$secret = $g->generateSecret();
-$QRCode = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate('gs', $secret, 'GJSON Authenticator');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,19 +50,16 @@ $QRCode = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate('gs', $secret, 'GJSO
                 <h1>GJSON Authenticator</h1>
                 <p style="font-style: italic;">Login with Google Authenticator Time-Based</p>
                 <hr>
-                <p style="font-style: italic;">Ativação do Login Two-Factor com GoogleAuthenticator</p>
-                <form action="activate.php" method="post">
-                    <img src="<?= $QRCode; ?>" alt="Verify Code" class="img-fluid"><br><br>
-                    <input type="text" name="secret" class="form-control" value="<?= $secret ?>" style="font-size: xx-larger; width: 200px; border-radius: 0px; text-align: center;
-                    display:inline; color:#0275d8;" readonly>
+                <p style="font-style: italic;">Tela de Login com código</p>
+                <form action="verify.php" method="post">
                     <input type="number" class="form-control" name="code" placeholder="Enter Code"
                     style="font-size: xx-larger; width: 200px; border-radius: 0px; text-align: center;
                     display:inline; color:#0275d8;">
                     <br><br>
                     <button type="submit" class="btn btn-md btn-primary" style="width: 200px; border-radius:0px;">
-                        Activate Two-Factor
+                        Verify Code
                     </button>
-                </form>
+                </form> 
             </div>
         </div>
     </div>
